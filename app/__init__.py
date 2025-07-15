@@ -118,3 +118,8 @@ def map():
 
     ]
     return render_template("map.html", places=places)
+
+
+@app.route("/timeline")
+def timeline():
+    return render_template('timeline.html', title="Timeline")

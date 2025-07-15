@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Timeline{% endblock %}
+
+{% block content %}
+<section class="timeline">
+  <h2>Timeline</h2>
+  <p>Check out my timeline updates!</p>
+
+  <!-- Form to create a new timeline post -->
+  <form id="timeline-form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+    
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+    
+    <label for="content">Content:</label>
+    <textarea id="content" name="content" rows="4" required></textarea>
+    
+    <button type="submit">Post</button>
+  </form>
+
+  <!-- Section to display timeline posts -->
+  <div id="timeline-posts">
+    <h3>All Posts</h3>
+    <ul id="posts-list"></ul>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+<script>
+    // Function to fetch and display all timeline posts
+    async function fetchTimelinePosts() {
+      const response = await fetch('/api/timeline_post');
+      const data = await response.json();
+      const postsList = document.getElementById('posts-list');
+      postsList.innerHTML = ''; // Clear the list
+  
+      data.timeline_posts.forEach(post => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div class="post">
+                <img src="https://www.gravatar.com/avatar/${CryptoJS.MD5(post.email.trim().toLowerCase())}?d=identicon" alt="Profile Image">            <div>
+              <strong>${post.name}</strong> (${post.email})
+              <p>${post.content}</p>
+              <small>${new Date(post.created_at).toLocaleString()}</small>
+              <button onclick="deletePost(${post.id})">Delete</button>
+            </div>
+          </div>
+        `;
+        postsList.appendChild(li);
+      });
+    }
+  
+    // Function to handle form submission
+    document.getElementById('timeline-form').addEventListener('submit', async (event) => {
+      event.preventDefault(); // Prevent default form submission
+  
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const content = document.getElementById('content').value;
+  
+      // Make a POST request to create a new timeline post
+      const response = await fetch('/api/timeline_post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ name, email, content })
+      });
+  
+      if (response.ok) {
+        document.getElementById('timeline-form').reset(); // Clear the form
+        fetchTimelinePosts(); // Refresh the posts list
+      } else {
+        alert('Failed to create a post. Please try again.');
+      }
+    });
+
+    // Function to delete a timeline post
+    async function deletePost(postId) {
+      const response = await fetch(`/api/timeline_post/${postId}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        fetchTimelinePosts(); // Refresh the posts list
+      } else {
+        alert('Failed to delete the post. Please try again.');
+      }
+    }
+  
+    // Fetch and display posts when the page loads
+    fetchTimelinePosts();
+  </script>
+
+<style>
+    .timeline {
+      max-width: 600px;
+      margin: 0 auto;
+      font-family: Arial, sans-serif;
+    }
+  
+    form {
+      margin-bottom: 20px;
+    }
+  
+    form label {
+      display: block;
+      margin-top: 10px;
+    }
+  
+    form input, form textarea, form button {
+      width: 100%;
+      margin-top: 5px;
+      padding: 8px;
+      font-size: 14px;
+    }
+  
+    #posts-list {
+      list-style: none;
+      padding: 0;
+    }
+  
+    .post {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+.post img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .post div {
+    flex: 1;
+  }
+
+  .post strong {
+    font-size: 16px;
+  }
+
+  .post p {
+    margin: 5px 0;
+  }
+
+  .post small {
+    color: #888;
+  }
+
+  .post button {
+    margin-top: 5px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+
+  .post button:hover {
+    background-color: #d32f2f;
+  }
+</style>
+{% endblock %}
