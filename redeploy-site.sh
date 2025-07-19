@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd portfolio/pe-portfolio-site
 
 echo "--> Updating repo…"
