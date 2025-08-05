@@ -1,14 +1,10 @@
-#!/bin/bash
 
 cd portfolio/pe-portfolio-site
 
 echo "--> Updating repo…"
-git fetch && git reset origin/main --hard
+git fetch && git reset origin/main --hard 
 
+docker compose -f docker-compose.prod.yml down
 
-echo "--> Installing deps…"
-source venv/bin/activate
-pip install -r requirements.txt
+docker compose -f docker-compose.prod.yml up -d --build
 
-systemctl daemon-reload
-systemctl restart myportfolio
