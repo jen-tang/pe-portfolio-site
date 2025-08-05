@@ -13,7 +13,7 @@ class AppTestCase(unittest.TestCase):
         assert response.status_code == 200
         html = response.get_data(as_text=True)
         assert '<!DOCTYPE html>' in html
-        assert "<h2>Welcome to My Portfolio</h2>" in html
+        assert "<h2>Welcome to My Portfolio!</h2>" in html
 
     def test_timeline(self):
         response = self.client.get('/api/timeline_post')
