@@ -8,7 +8,7 @@ services:
    - .env
   depends_on:
    - mysql
-
+    condition: service_healthy
  mysql:
   container_name: mysql
   image: mariadb
@@ -17,6 +17,11 @@ services:
    - .env
   volumes:
    - mydatabase:/var/lib/mysql
+  healthcheck:
+    test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+    interval: 5s
+    timeout: 3s
+    retries: 10
 
  nginx:
   container_name: nginx
