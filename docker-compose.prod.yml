@@ -18,11 +18,10 @@ services:
   volumes:
    - mydatabase:/var/lib/mysql
   healthcheck:
-    test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-    interval: 5s
-    timeout: 3s
-    retries: 10
-
+   test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-pyourpass"]
+   interval: 10s  
+   timeout: 5s
+   retries: 10
  nginx:
   container_name: nginx
   image: jonasal/nginx-certbot
