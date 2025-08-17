@@ -84,6 +84,12 @@ def about():
         title="About Me",
         work_experiences=[
             {
+                "position": "Software Engineer Intern",
+                "company": "BNY",
+                "years": "June 2025-August 2025",
+                "description": "Made dashboards",
+            },
+            {
                 "position": "Developer Intern",
                 "company": "Direct Agents",
                 "years": "February 2025-May 2025",
